@@ -24,8 +24,6 @@ ZNNColorGenerationModelElythra CGMElythra;
 
 std::vector<double> RandomShade1 = CGMElythra.GenerateColorFromTraining();
 std::vector<double> RandomShade2 = CGMElythra.GenerateColorFromTraining();
-std::vector<double> RandomShade3 = CGMElythra.GenerateColorFromTraining();
-std::vector<double> RandomShade4 = CGMElythra.GenerateColorFromTraining();
 
 std::random_device rd;
 std::mt19937 gen(rd());
@@ -64,10 +62,6 @@ void FILEINITFORMODEL(){
     TotalR /= (w*h);
     TotalG /= (w*h);
     TotalB /= (w*h);
-
-    std::cout << (float)TotalR/255 << std::endl;
-    std::cout << (float)TotalG/255 << std::endl;
-    std::cout << (float)TotalB/255 << std::endl;
 
     double RBias = (float)TotalR/255;
     double GBias = (float)TotalG/255;
@@ -114,13 +108,10 @@ void FILEINITFORMODEL(){
 
     RandomShade1 = CGMElythra.GenerateColorFromTraining();
     RandomShade2 = CGMElythra.GenerateColorFromTraining();
-    RandomShade3 = CGMElythra.GenerateColorFromTraining();
-    RandomShade4 = CGMElythra.GenerateColorFromTraining();
 }
 
 void FileOpenContext(void* UserData, const char* const Files[], int FileAmount){
     if (Files[0] != NULL){
-        std::cout << Files[0] << std::endl;
         ActiveChosenFileTexture = IMG_LoadTexture(GlobalRenderer, Files[0]);
         ActiveChosenFileSurface = IMG_Load(Files[0]);
         FILEINITFORMODEL();
@@ -136,9 +127,7 @@ int main(){
     GlobalRenderer = MainWindow.rendererOBJ;
 
     Rectangle ColorSuggestionOne(300, 50, 50, 50);
-    Rectangle ColorSuggestionTwo(300, 150, 50, 50);
-    Rectangle ColorSuggestionThree(300, 250, 50, 50);
-    Rectangle ColorSuggestionFour(300, 350, 50, 50);
+    Rectangle ColorSuggestionTwo(400, 50, 50, 50);
 
     SDL_Texture* AddButtonTexture = IMG_LoadTexture(MainWindow.rendererOBJ, "Textures/AddSymbol.png");
     SDL_Texture* RActive = IMG_LoadTexture(MainWindow.rendererOBJ, "Textures/RActive.png");
@@ -172,16 +161,14 @@ int main(){
 
         ColorSuggestionOne.render(MainWindow.rendererOBJ, RandomShade1[0]*255, RandomShade1[1]*255, RandomShade1[2]*255);
         ColorSuggestionTwo.render(MainWindow.rendererOBJ, RandomShade2[0]*255, RandomShade2[1]*255, RandomShade2[2]*255);
-        ColorSuggestionThree.render(MainWindow.rendererOBJ, RandomShade3[0]*255, RandomShade3[1]*255, RandomShade3[2]*255);
-        ColorSuggestionFour.render(MainWindow.rendererOBJ, RandomShade4[0]*255, RandomShade4[1]*255, RandomShade4[2]*255);
 
         AddButton.render(MainWindow.rendererOBJ);
 
         if (ActiveChosenFileTexture != NULL){
-            SDL_FRect ACFTRect = {(float)100-(ActiveChosenFileTexture->w*SIZE_SCALE)/4, (float)225-((ActiveChosenFileTexture->h*SIZE_SCALE)/2), (float)ActiveChosenFileTexture->w*SIZE_SCALE, (float)ActiveChosenFileTexture->h*SIZE_SCALE};
+            SDL_FRect ACFTRect = {(float)210-(ActiveChosenFileTexture->w*SIZE_SCALE)/4, (float)225-((ActiveChosenFileTexture->h*SIZE_SCALE)/2), (float)ActiveChosenFileTexture->w*SIZE_SCALE, (float)ActiveChosenFileTexture->h*SIZE_SCALE};
             SDL_RenderTexture(MainWindow.rendererOBJ, ActiveChosenFileTexture, NULL, &ACFTRect);
         }
-
+        
         RChannelButton.render(MainWindow.rendererOBJ);
         GChannelButton.render(MainWindow.rendererOBJ);
         BChannelButton.render(MainWindow.rendererOBJ);
@@ -192,6 +179,22 @@ int main(){
             MainWindow.PollEvents(&event);
 
             if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
+
+                if (ColorSuggestionOne.MouseOverlap() == true){
+                    SDL_SetClipboardText(
+                        (std::to_string(RandomShade1[0]*255) + " " +
+                        std::to_string(RandomShade1[1]*255) + " " +
+                        std::to_string(RandomShade1[2]*255) + " ").c_str()
+                    );
+                }
+
+                if (ColorSuggestionTwo.MouseOverlap() == true){
+                    SDL_SetClipboardText(
+                        (std::to_string(RandomShade2[0]*255) + " " +
+                        std::to_string(RandomShade2[1]*255) + " " +
+                        std::to_string(RandomShade2[2]*255) + " ").c_str()
+                    );
+                }
 
                 if (AddButton.MouseOverlap() == true){
                     SDL_ShowOpenFileDialog(FileOpenContext, NULL, MainWindow.windowOBJ, NULL, 0, NULL, false);

@@ -34,6 +34,7 @@ struct Rectangle
     SDL_FRect rectangleOBJ;
     Rectangle(float nx, float ny, float nw, float nh);
     void render(SDL_Renderer* renderer, int r, int g, int b);
+    bool MouseOverlap();
 };
 
 struct TextureButton
@@ -78,6 +79,17 @@ void Rectangle::render(SDL_Renderer* renderer, int r, int g, int b){
     SDL_RenderRect(renderer, &rectangleOBJ);
     SDL_RenderFillRect(renderer, &rectangleOBJ);
 };
+
+bool Rectangle::MouseOverlap(){
+    float mx, my;
+    SDL_GetMouseState(&mx, &my);
+
+    if (mx >= rectangleOBJ.x && mx <= rectangleOBJ.x + rectangleOBJ.w && my >= rectangleOBJ.y && my <= rectangleOBJ.y + rectangleOBJ.h){
+        return true;
+    }
+
+    return false;
+}
 
 // TextureButton Definitions
 

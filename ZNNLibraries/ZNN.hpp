@@ -137,8 +137,6 @@ void ZNNColorGenerationModelElythra::TrainZNN(std::vector<double> TrainingBias, 
 
         iteration += 3;
     }
-
-    std::cout << "Model trained with " << ((1 - Total_Error) * 100) << "% Accuracy!" << std::endl;
 }
 
 std::vector<double> ZNNColorGenerationModelElythra::GenerateColorFromTraining(){
